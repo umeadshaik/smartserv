@@ -1,14 +1,145 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Booked</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmed - Smart Serv</title>
+
 </head>
+<style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #0057FF;
+  --primary-dark: #0040B8;
+  --success: #22C55E;
+  --white: #FFFFFF;
+  --gray-100: #F5F5F5;
+  --gray-800: #1F2937;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--gray-100);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.confirmation-card {
+  background: var(--white);
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  text-align: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin-bottom: 2rem;
+}
+
+.logo span {
+  color: var(--primary);
+}
+
+.check-circle {
+  width: 80px;
+  height: 80px;
+  background: var(--success);
+  border-radius: 50%;
+  margin: 0 auto 2rem;
+  position: relative;
+  animation: scaleIn 0.3s ease-in-out;
+}
+
+.check {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 24px;
+  height: 40px;
+  border-right: 4px solid var(--white);
+  border-bottom: 4px solid var(--white);
+  animation: checkmark 0.4s ease-in-out 0.3s forwards;
+  opacity: 0;
+  transform-origin: 50% 50%;
+}
+
+h1 {
+  color: var(--gray-800);
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+p {
+  color: var(--gray-800);
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes checkmark {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(45deg) scale(0.7);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(45deg) scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .confirmation-card {
+    padding: 2rem;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  p {
+    font-size: 1rem;
+  }
+}
+    </style>
+  
 <body>
-
-    <h1>Service Booked Successfully!</h1>
-    <p>Thank you for booking a service. We will contact you shortly.</p>
-
+  <div class="container">
+    <div class="confirmation-card">
+      <div class="logo">
+        Smart<span>Serv</span>
+      </div>
+      <div class="check-circle">
+        <div class="check"></div>
+      </div>
+      <h1>Booking Confirmed</h1>
+      <p>Our team will contact you shortly</p>
+    </div>
+  </div>
 </body>
 </html>
