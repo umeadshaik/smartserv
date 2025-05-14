@@ -1,15 +1,32 @@
-from flask import Flask, render_template, request, redirect
-import csv
+
+
+from flask import Flask, render_template, request, redirect, session
 import os
+import sqlite3
+from flask import send_from_directory
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Needed for session
 
-# Route to render the booking form                                                              
-@app.route('/')    
+UPLOAD_FOLDER = 'uploads'
+# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
+
+
+# Route for the index page
+@app.route('/')
+def index():
+    return render_template('index.html')  # This should open the index page
+
+# Route for the booking service page
+@app.route('/book_service.html')
 def book_service():
-    return render_template('book_service.html')
+    return render_template('book_service.html')  # This should open the book_service page
 
-# Route to handle form submission
+# Route for handling the form submission
 @app.route('/submit', methods=['POST'])
 def submit():
     fullName = request.form['fullName']
@@ -20,20 +37,38 @@ def submit():
     preferredTime = request.form['preferredTime']
     problemDescription = request.form['problemDescription']
 
-    # Handle file upload
     mediaFile = request.files['mediaUpload']
-    if mediaFile.filename != '':  # Check if a file is uploaded
-        media_path = os.path.join('uploads', mediaFile.filename)
+    mediaFileName = ""
+    if mediaFile and mediaFile.filename != '':
+        mediaFileName = mediaFile.filename
+        media_path = os.path.join(UPLOAD_FOLDER, mediaFileName)
         mediaFile.save(media_path)
 
-    # Save booking details to CSV
-    with open('bookings.csv', mode='a', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow([fullName, phoneNumber, address, serviceType, preferredDate, preferredTime, problemDescription, mediaFile.filename])
+    # Save to SQLite database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO bookings (fullName, phoneNumber, address, serviceType, preferredDate, preferredTime, problemDescription, mediaFileName)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (fullName, phoneNumber, address, serviceType, preferredDate, preferredTime, problemDescription, mediaFileName))
+    conn.commit()
+    conn.close()
+    return redirect('/submit.html')
+@app.route('/submit.html')
+def submit_page():
+    return render_template('submit.html') 
 
-    return "Booking submitted successfully!"
+# Admin dashboard route
+@app.route('/admin.html')
+def admin_dashboard():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM bookings")
+    bookings = cursor.fetchall()
+    conn.close()
 
-# Start the Flask app
+    return render_template('admin.html', bookings=bookings)
+
 if __name__ == '__main__':
     app.run(debug=True)
 
